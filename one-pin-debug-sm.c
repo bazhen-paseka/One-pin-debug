@@ -21,18 +21,15 @@
 *							LOCAL DEFINES
 **************************************************************************
 */
-
 	#define BITS_IN_BYTE_QTY	8
 	#define	LOG_UART_BIT_DELAY	53
 	#define CHECK_BIT(var, pos) (((var) & (1UL << (pos))) != 0)
-
 /*
 **************************************************************************
 *							LOCAL CONSTANTS
 **************************************************************************
 */
-
-
+	OnePin_Debug_struct 		hOnePin ;
 /*
 **************************************************************************
 *						    LOCAL DATA TYPES
@@ -64,20 +61,28 @@
 *                        LOCAL FUNCTION PROTOTYPES
 **************************************************************************
 */
-
-void Send_byte(	uint8_t 	_byte			) ;
-void Send_bit(	uint8_t 	_bit			) ;
-void Delay_us(	uint32_t	_delay_time_u32	) ;
-
+	void Send_byte(	uint8_t		_byte			) ;
+	void Send_bit(	uint8_t		_bit			) ;
+	void Delay_us(	uint32_t	_delay_time_u32	) ;
 /*
 **************************************************************************
 *                           GLOBAL FUNCTIONS
 **************************************************************************
 */
-void One_pin_debug_print(uint8_t* _debug_buffer, uint8_t _debug_size_u8 ) {
+void One_pin_debug_print(	uint8_t*	_debug_buffer	,
+							uint8_t 	_debug_size_u8	) {
 	for ( int i =0; i <_debug_size_u8;  i++ ) {
-		Send_byte(_debug_buffer[i] ) ;
+		Send_byte( _debug_buffer[i] ) ;
 	}
+}
+/***************************************************************/
+
+void OnePin_Init(	GPIO_TypeDef*			_port				,
+					uint16_t				_pin				,
+					uint8_t					_status				) {
+	hOnePin.status_u8 	= _status	;
+	hOnePin.Port		= _port		;
+	hOnePin.Pin			= _pin		;
 }
 
 /*
@@ -86,20 +91,20 @@ void One_pin_debug_print(uint8_t* _debug_buffer, uint8_t _debug_size_u8 ) {
 **************************************************************************
 */
 
-void Send_byte (uint8_t _byte) {
-	Send_bit(0);
+void Send_byte(	uint8_t	_byte ) {
+	Send_bit( 0 );
 	for ( uint8_t i = 0; i < BITS_IN_BYTE_QTY; i++) {
-		Send_bit(CHECK_BIT(_byte, i));
+		Send_bit( CHECK_BIT(_byte, i));
 	}
-	Send_bit(1);
+	Send_bit( 1 );
 }
 /***************************************************************/
 
-void Send_bit (uint8_t _bit) {
-    if(_bit) {
-    	HAL_GPIO_WritePin( ONE_DEBUG_GPIO_Port , ONE_DEBUG_Pin , SET);
+void Send_bit( uint8_t	_bit ) {
+    if( _bit ) {
+    	HAL_GPIO_WritePin( hOnePin.Port , hOnePin.Pin,   SET ) ;
     } else {
-    	HAL_GPIO_WritePin( ONE_DEBUG_GPIO_Port , ONE_DEBUG_Pin , RESET);
+    	HAL_GPIO_WritePin( hOnePin.Port , hOnePin.Pin, RESET ) ;
     }
 
     Delay_us(LOG_UART_BIT_DELAY);  // 25uS -> UART speed  = 38`400
@@ -111,3 +116,9 @@ void Delay_us(uint32_t _delay_time_u32) {
 		__asm("nop") ;
 	}
 }
+
+/*
+**************************************************************************
+*                           	END
+**************************************************************************
+*/

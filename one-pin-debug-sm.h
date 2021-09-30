@@ -17,7 +17,7 @@
 *								INCLUDE FILES
 **************************************************************************
 */
-	#include "stm32f1xx_hal.h"
+	#include "main.h"
 /*
 **************************************************************************
 *								    DEFINES                     
@@ -29,16 +29,22 @@
 *								   DATA TYPES
 **************************************************************************
 */
-
+	typedef struct	{
+		GPIO_TypeDef*	Port		;
+		uint16_t		Pin			;
+		uint8_t			status_u8	;
+	} OnePin_Debug_struct;
 /*
 **************************************************************************
 *								GLOBAL VARIABLES
 **************************************************************************
 */
+	void OnePin_Init(			GPIO_TypeDef*	_port			,
+								uint16_t		_pin			,
+								uint8_t			_status			) ;
 
-	void One_pin_debug_print(	uint8_t*	_debug_buffer	,
-								uint8_t 	_debug_size_u8 	) ;
-
+	void One_pin_debug_print(	uint8_t*		_debug_buffer	,
+								uint8_t 		_debug_size_u8	) ;
 /*
 **************************************************************************
 *									 MACRO'S                     
