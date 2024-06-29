@@ -39,11 +39,11 @@
 *								GLOBAL VARIABLES
 **************************************************************************
 */
-	void OnePin_Init(			GPIO_TypeDef*	_port			,
+	void One_Pin_Init(			GPIO_TypeDef*	_port			,
 								uint16_t		_pin			,
 								uint8_t			_status			) ;
 
-	void One_pin_debug_print(	uint8_t*		_debug_buffer	,
+	void One_Pin_Debug_Print(	uint8_t*		_debug_buffer	,
 								uint8_t 		_debug_size_u8	) ;
 /*
 **************************************************************************
