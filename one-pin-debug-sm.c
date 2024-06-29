@@ -22,7 +22,8 @@
 **************************************************************************
 */
 	#define BITS_IN_BYTE_QTY	8
-	#define	LOG_UART_BIT_DELAY	53
+	//#define	LOG_UART_BIT_DELAY	53	//	38`400
+	#define	LOG_UART_BIT_DELAY	78	//	62`500 at 72MHz from 60`000 to 65`000 -> 16 uSec
 	#define CHECK_BIT(var, pos) (((var) & (1UL << (pos))) != 0)
 /*
 **************************************************************************
@@ -69,21 +70,21 @@
 *                           GLOBAL FUNCTIONS
 **************************************************************************
 */
-void One_pin_debug_print(	uint8_t*	_debug_buffer	,
-							uint8_t 	_debug_size_u8	) {
-	for ( int i =0; i <_debug_size_u8;  i++ ) {
-		Send_byte( _debug_buffer[i] ) ;
-	}
-}
-/***************************************************************/
-
-void OnePin_Init(	GPIO_TypeDef*			_port				,
+void One_Pin_Init(	GPIO_TypeDef*			_port				,
 					uint16_t				_pin				,
 					uint8_t					_status				) {
 	hOnePin.status_u8 	= _status	;
 	hOnePin.Port		= _port		;
 	hOnePin.Pin			= _pin		;
-}
+} //***************************************************************
+
+void One_Pin_Debug_Print(	uint8_t*	_debug_buffer	,
+							uint8_t 	_debug_size_u8	) {
+	for ( int i =0; i <_debug_size_u8;  i++ ) {
+		Send_byte( _debug_buffer[i] ) ;
+	}
+} //***************************************************************
+  //***************************************************************
 
 /*
 **************************************************************************
@@ -97,8 +98,7 @@ void Send_byte(	uint8_t	_byte ) {
 		Send_bit( CHECK_BIT(_byte, i));
 	}
 	Send_bit( 1 );
-}
-/***************************************************************/
+} //***************************************************************
 
 void Send_bit( uint8_t	_bit ) {
     if( _bit ) {
@@ -108,14 +108,13 @@ void Send_bit( uint8_t	_bit ) {
     }
 
     Delay_us(LOG_UART_BIT_DELAY);  // 25uS -> UART speed  = 38`400
-}
-/***************************************************************/
+} /***************************************************************/
 
 void Delay_us(uint32_t _delay_time_u32) {
 	for (; _delay_time_u32; _delay_time_u32--) {
 		__asm("nop") ;
 	}
-}
+} /***************************************************************/
 
 /*
 **************************************************************************
